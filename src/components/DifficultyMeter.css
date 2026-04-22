@@ -1,0 +1,45 @@
+.difficulty-meter {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+}
+
+.difficulty-segments {
+  display: flex;
+  gap: 3px;
+}
+
+.difficulty-segment {
+  display: block;
+  border-radius: 2px;
+  background: var(--surface-3);
+  transition: background var(--duration-fast) var(--ease-out-quart);
+}
+
+.difficulty-meter--sm .difficulty-segment {
+  width: 14px;
+  height: 6px;
+}
+
+.difficulty-meter--md .difficulty-segment {
+  width: 20px;
+  height: 8px;
+}
+
+.difficulty-meter--lg .difficulty-segment {
+  width: 28px;
+  height: 10px;
+}
+
+/* Color gradient: green → yellow → red */
+.difficulty-segment.active[data-level="1"] { background: oklch(72% 0.16 145); }
+.difficulty-segment.active[data-level="2"] { background: oklch(76% 0.14 120); }
+.difficulty-segment.active[data-level="3"] { background: oklch(78% 0.15 85); }
+.difficulty-segment.active[data-level="4"] { background: oklch(68% 0.18 45); }
+.difficulty-segment.active[data-level="5"] { background: oklch(62% 0.2 25); }
+
+.difficulty-label {
+  font-size: var(--text-xs);
+  font-weight: 500;
+  color: var(--text-secondary);
+}

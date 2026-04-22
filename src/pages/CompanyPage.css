@@ -1,0 +1,195 @@
+.company-page {
+  padding-bottom: var(--space-5xl);
+}
+
+.company-page-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-xl) var(--space-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+}
+
+.company-back {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-sm);
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--duration-instant) var(--ease-out-quart);
+}
+
+.company-back:hover {
+  color: var(--accent);
+}
+
+/* Header */
+.company-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xl);
+}
+
+.company-logo-large {
+  width: 80px;
+  height: 80px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-2);
+  border: 1px solid var(--border-subtle);
+  flex-shrink: 0;
+}
+
+.company-logo-large img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  padding: 10px;
+}
+
+.company-logo-fallback {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: var(--text-3xl);
+  color: var(--accent);
+}
+
+.company-header-info {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.company-header-info h1 {
+  font-size: var(--text-2xl);
+}
+
+.company-website {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-xs);
+  font-size: var(--text-sm);
+  color: var(--text-tertiary);
+}
+
+.company-website:hover {
+  color: var(--accent);
+}
+
+.company-interview-count {
+  font-size: var(--text-sm);
+  color: var(--text-secondary);
+}
+
+/* Sort */
+.company-sort-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.company-sort-row h2 {
+  font-size: var(--text-xl);
+}
+
+.company-sort-btns {
+  display: flex;
+  gap: 2px;
+  background: var(--surface-2);
+  border-radius: var(--radius-md);
+  padding: 2px;
+}
+
+.company-sort-btn {
+  padding: var(--space-xs) var(--space-lg);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--text-secondary);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all var(--duration-instant) var(--ease-out-quart);
+}
+
+.company-sort-btn.active {
+  background: var(--surface-0);
+  color: var(--text-primary);
+}
+
+.company-sort-btn:hover:not(.active) {
+  color: var(--text-primary);
+}
+
+/* Interviews */
+.company-interviews-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.company-interviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-sm);
+}
+
+/* Empty */
+.company-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: var(--space-lg);
+  padding: var(--space-5xl) var(--space-xl);
+  color: var(--text-tertiary);
+}
+
+.company-empty svg {
+  opacity: 0.3;
+}
+
+.company-empty h3 {
+  color: var(--text-secondary);
+}
+
+.company-empty p {
+  font-size: var(--text-sm);
+  max-width: 40ch;
+}
+
+.company-empty-cta {
+  padding: var(--space-md) var(--space-2xl);
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-weight: 600;
+  font-size: var(--text-base);
+  border-radius: var(--radius-md);
+  margin-top: var(--space-sm);
+}
+
+.company-empty-cta:hover {
+  background: var(--accent-hover);
+}
+
+@media (max-width: 640px) {
+  .company-page-inner {
+    padding: var(--space-lg) var(--space-lg);
+  }
+
+  .company-header {
+    gap: var(--space-lg);
+  }
+
+  .company-logo-large {
+    width: 56px;
+    height: 56px;
+  }
+
+  .company-header-info h1 {
+    font-size: var(--text-xl);
+  }
+}

@@ -1,0 +1,195 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  background: var(--surface-1);
+  border-bottom: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+}
+
+.navbar-inner {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: var(--space-md) var(--space-xl);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-xl);
+}
+
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  color: var(--text-primary);
+  text-decoration: none;
+  flex-shrink: 0;
+}
+
+.navbar-brand:hover { color: var(--accent); }
+
+.navbar-logo-icon {
+  color: var(--accent);
+  flex-shrink: 0;
+}
+
+.navbar-logo-text {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-lg);
+  letter-spacing: -0.03em;
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2xl);
+}
+
+.navbar-link {
+  color: var(--text-secondary);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color var(--duration-instant) var(--ease-out-quart);
+  position: relative;
+}
+
+.navbar-link::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--accent);
+  transition: width var(--duration-fast) var(--ease-out-expo);
+}
+
+.navbar-link:hover {
+  color: var(--text-primary);
+}
+
+.navbar-link:hover::after {
+  width: 100%;
+}
+
+.navbar-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.navbar-search-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  color: var(--text-secondary);
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.navbar-search-toggle:hover,
+.navbar-search-toggle.active {
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+.navbar-cta {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
+  padding: var(--space-sm) var(--space-lg);
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-weight: 600;
+  font-size: var(--text-sm);
+  border-radius: var(--radius-md);
+  text-decoration: none;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+}
+
+.navbar-cta:hover {
+  background: var(--accent-hover);
+  color: var(--text-inverse);
+  transform: translateY(-1px);
+}
+
+/* Search bar dropdown */
+.navbar-search-bar {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height var(--duration-normal) var(--ease-out-expo);
+}
+
+.navbar-search-bar.open {
+  max-height: 80px;
+}
+
+.navbar-search-form {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--space-xl) var(--space-md);
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+}
+
+.navbar-search-icon {
+  color: var(--text-tertiary);
+  flex-shrink: 0;
+}
+
+.navbar-search-input {
+  flex: 1;
+  padding: var(--space-sm) 0;
+  font-size: var(--text-base);
+  color: var(--text-primary);
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-bottom: 1px solid var(--border-subtle) !important;
+  transition: border-color var(--duration-fast) var(--ease-out-quart);
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.navbar-search-input::placeholder {
+  color: var(--text-tertiary);
+}
+
+.navbar-search-input:focus {
+  border-bottom-color: var(--accent) !important;
+}
+
+.navbar-search-hint {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  color: var(--text-tertiary);
+  padding: 2px 6px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .navbar-inner {
+    padding: var(--space-md) var(--space-lg);
+  }
+
+  .navbar-links { display: none; }
+
+  .navbar-cta span { display: none; }
+  .navbar-cta {
+    padding: var(--space-sm);
+    border-radius: var(--radius-md);
+  }
+
+  .navbar-logo-text {
+    font-size: var(--text-base);
+  }
+}
