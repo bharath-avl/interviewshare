@@ -42,6 +42,7 @@ export default function SubmitForm() {
     tips: '',
     tags: [],
     anonymous: true,
+    authorName: '',
   });
 
   const [errors, setErrors] = useState({});
@@ -119,6 +120,9 @@ export default function SubmitForm() {
       const nonEmpty = form.questions.filter(q => q.trim());
       if (nonEmpty.length === 0) errs.questions = 'Add at least one question';
     }
+    if (s === 3) {
+      if (!form.anonymous && !form.authorName.trim()) errs.authorName = 'Please enter your name';
+    }
     setErrors(errs);
     return Object.keys(errs).length === 0;
   }
@@ -134,11 +138,12 @@ export default function SubmitForm() {
   }
 
   function handleSubmit() {
-    if (!validateStep(2)) return;
+    if (!validateStep(3)) return;
 
     const payload = {
       ...form,
       questions: form.questions.filter(q => q.trim()),
+      authorName: form.anonymous ? '' : form.authorName.trim(),
     };
 
     // If custom company entered without selecting from list
@@ -168,7 +173,7 @@ export default function SubmitForm() {
           <button onClick={() => { setSubmitted(false); setStep(0); setForm({
             companySlug: '', companyName: '', companyDomain: '', role: '', seniority: '',
             location: '', interviewDate: '', difficulty: 3, outcome: '', questions: [''],
-            tips: '', tags: [], anonymous: true,
+            tips: '', tags: [], anonymous: true, authorName: '',
           }); }} className="submit-success-btn secondary">
             Submit Another
           </button>
@@ -477,6 +482,21 @@ export default function SubmitForm() {
             />
             <span>Post anonymously</span>
           </label>
+
+          {!form.anonymous && (
+            <div className="submit-field submit-name-field animate-fade-up">
+              <label className="submit-label">Your Name *</label>
+              <input
+                type="text"
+                className={`submit-input ${errors.authorName ? 'error' : ''}`}
+                placeholder="Enter your name"
+                value={form.authorName}
+                onChange={(e) => setField('authorName', e.target.value)}
+                id="author-name-input"
+              />
+              {errors.authorName && <span className="submit-error">{errors.authorName}</span>}
+            </div>
+          )}
         </div>
       )}
 

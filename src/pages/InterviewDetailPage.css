@@ -220,6 +220,8 @@
   background: var(--surface-1);
   border-left: 3px solid var(--accent);
   border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .detail-tags-row {

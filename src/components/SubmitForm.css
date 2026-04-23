@@ -423,6 +423,10 @@
   accent-color: var(--accent);
 }
 
+.submit-name-field {
+  margin-top: var(--space-md);
+}
+
 /* Navigation */
 .submit-nav {
   display: flex;

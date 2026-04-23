@@ -157,7 +157,14 @@ export default function InterviewDetailPage() {
                 </span>
               </div>
 
-              {interview.anonymous && (
+              {interview.anonymous ? (
+                <span className="detail-sidebar-anon">Anonymous submission</span>
+              ) : interview.authorName ? (
+                <div className="detail-sidebar-info">
+                  <span className="detail-sidebar-label">Shared by</span>
+                  <span className="detail-sidebar-value">{interview.authorName}</span>
+                </div>
+              ) : (
                 <span className="detail-sidebar-anon">Anonymous submission</span>
               )}
             </div>
