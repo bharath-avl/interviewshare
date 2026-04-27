@@ -80,7 +80,7 @@ export default function AISummary({ interview }) {
             </svg>
           </div>
           <span className="ai-summary-title">AI Summary</span>
-          <span className="ai-summary-badge">GPT</span>
+          <span className="ai-summary-badge">Gemini</span>
         </div>
         {summary && (
           <button className="ai-summary-toggle" aria-label={expanded ? 'Collapse' : 'Expand'}>

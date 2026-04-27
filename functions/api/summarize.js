@@ -1,6 +1,6 @@
 // Cloudflare Pages Function — POST /api/summarize
-// Proxies to OpenAI ChatGPT to summarize interview experiences.
-// Environment variable OPENAI_API_KEY must be set in Cloudflare Pages dashboard.
+// Proxies to Google Gemini API to summarize interview experiences.
+// Environment variable GEMINI_API_KEY must be set in Cloudflare Pages dashboard.
 
 export async function onRequestPost(context) {
   const corsHeaders = {
@@ -19,10 +19,10 @@ export async function onRequestPost(context) {
       );
     }
 
-    const apiKey = context.env.OPENAI_API_KEY;
+    const apiKey = context.env.GEMINI_API_KEY;
     if (!apiKey) {
       return new Response(
-        JSON.stringify({ error: 'OpenAI API key not configured.' }),
+        JSON.stringify({ error: 'Gemini API key not configured.' }),
         { status: 500, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
       );
     }
@@ -40,26 +40,33 @@ Keep it concise, friendly, and useful. Use markdown formatting. Do not add any p
 
 ${content.slice(0, 4000)}`;
 
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
+    const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+    const response = await fetch(geminiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiKey}`,
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
-        messages: [
-          { role: 'system', content: systemPrompt },
-          { role: 'user', content: userPrompt },
+        system_instruction: {
+          parts: [{ text: systemPrompt }],
+        },
+        contents: [
+          {
+            role: 'user',
+            parts: [{ text: userPrompt }],
+          },
         ],
-        max_tokens: 600,
-        temperature: 0.5,
+        generationConfig: {
+          maxOutputTokens: 600,
+          temperature: 0.5,
+        },
       }),
     });
 
     if (!response.ok) {
       const errText = await response.text();
-      console.error('OpenAI API error:', errText);
+      console.error('Gemini API error:', errText);
       return new Response(
         JSON.stringify({ error: 'AI service temporarily unavailable.' }),
         { status: 502, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
@@ -67,7 +74,8 @@ ${content.slice(0, 4000)}`;
     }
 
     const data = await response.json();
-    const summary = data.choices?.[0]?.message?.content || 'Could not generate summary.';
+    const summary =
+      data.candidates?.[0]?.content?.parts?.[0]?.text || 'Could not generate summary.';
 
     return new Response(
       JSON.stringify({ summary }),
