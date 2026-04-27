@@ -6,6 +6,7 @@ import HomePage from './pages/HomePage';
 import CompanyPage from './pages/CompanyPage';
 import InterviewDetailPage from './pages/InterviewDetailPage';
 import SubmitPage from './pages/SubmitPage';
+import NewsPage from './pages/NewsPage';
 import './App.css';
 
 export default function App() {
@@ -24,6 +25,7 @@ export default function App() {
           <Route path="/company/:slug" element={<CompanyPage />} />
           <Route path="/interview/:id" element={<InterviewDetailPage />} />
           <Route path="/submit" element={<SubmitPage />} />
+          <Route path="/news" element={<NewsPage />} />
         </Routes>
       </main>
       <Footer />

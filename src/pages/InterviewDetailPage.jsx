@@ -6,6 +6,7 @@ import DifficultyMeter from '../components/DifficultyMeter';
 import TagChip from '../components/TagChip';
 import VoteButton from '../components/VoteButton';
 import CommentSection from '../components/CommentSection';
+import AISummary from '../components/AISummary';
 import './InterviewDetailPage.css';
 
 export default function InterviewDetailPage() {
@@ -147,6 +148,8 @@ export default function InterviewDetailPage() {
 
           {/* Sidebar */}
           <aside className="detail-sidebar">
+            <AISummary interview={interview} />
+
             <div className="detail-sidebar-sticky">
               <VoteButton interviewId={interview.id} />
 
