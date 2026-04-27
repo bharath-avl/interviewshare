@@ -1,25 +1,23 @@
 // Cloudflare Pages Function — GET /api/news
 // Fetches real-time tech company news using NewsData.io API
 // Environment variable NEWSDATA_API_KEY must be set in Cloudflare Pages dashboard.
-// Free tier: https://newsdata.io — 200 requests/day, perfect for this use-case.
+// Free tier: https://newsdata.io — 200 requests/day
 
 const TECH_KEYWORDS = [
-  // Indian Companies
   'TCS', 'Infosys', 'Wipro', 'HCLTech', 'Tech Mahindra', 'LTIMindtree',
   'Flipkart', 'Razorpay', 'Swiggy', 'Zomato', 'PhonePe', 'Paytm',
   'CRED', 'Meesho', 'Ola', 'Dream11', 'Groww', 'Juspay', 'Zerodha',
   'Reliance Jio', 'Myntra', 'ShareChat', 'Unacademy',
-  // Global
   'Google', 'Microsoft', 'Amazon', 'Meta', 'Apple', 'Netflix',
   'Nvidia', 'Adobe', 'Salesforce', 'Uber', 'Tesla', 'Intel',
   'Goldman Sachs', 'JPMorgan', 'Oracle', 'IBM', 'Samsung',
   'Atlassian', 'Sprinklr', 'ServiceNow', 'Cognizant',
 ];
 
-// Cache news in-memory for 30 minutes to avoid burning API quota
+// Cache news in-memory for 15 minutes to balance freshness vs quota
 let cachedNews = null;
 let cacheTimestamp = 0;
-const CACHE_DURATION_MS = 30 * 60 * 1000; // 30 minutes
+const CACHE_DURATION_MS = 15 * 60 * 1000;
 
 export async function onRequestGet(context) {
   const corsHeaders = {
@@ -38,7 +36,7 @@ export async function onRequestGet(context) {
     }
 
     const url = new URL(context.request.url);
-    const category = url.searchParams.get('category') || 'all'; // all, hiring, layoffs, funding
+    const category = url.searchParams.get('category') || 'all';
     const forceRefresh = url.searchParams.get('refresh') === 'true';
 
     // Check cache
@@ -51,35 +49,48 @@ export async function onRequestGet(context) {
       );
     }
 
-    // Fetch from NewsData.io — tech news focused on India + global tech
+    // Multiple diverse queries to maximize article count
     const queries = [
-      `technology hiring layoff startup India`,
-      `tech company India jobs funding`,
+      'India technology hiring layoff startup',
+      'tech company India jobs funding startup',
+      'Indian IT company TCS Infosys Wipro',
+      'India startup funding acquisition valuation',
+      'software engineer India tech layoffs hiring',
+      'Google Microsoft Amazon India technology',
+      'Flipkart Swiggy Zomato Razorpay PhonePe',
     ];
 
     let allArticles = [];
 
-    for (const q of queries) {
-      const apiUrl = `https://newsdata.io/api/1/latest?apikey=${apiKey}&q=${encodeURIComponent(q)}&language=en&category=technology,business&size=10`;
-
-      const response = await fetch(apiUrl);
-      if (response.ok) {
-        const data = await response.json();
-        if (data.results) {
-          allArticles = allArticles.concat(data.results);
+    // Fetch from all queries in parallel
+    const fetchPromises = queries.map(async (q) => {
+      try {
+        const apiUrl = `https://newsdata.io/api/1/latest?apikey=${apiKey}&q=${encodeURIComponent(q)}&language=en&category=technology,business&size=10`;
+        const response = await fetch(apiUrl);
+        if (response.ok) {
+          const data = await response.json();
+          if (data.results) return data.results;
         }
+      } catch (err) {
+        console.error(`News fetch error for query "${q}":`, err);
       }
-    }
+      return [];
+    });
 
-    // Deduplicate by title
+    const results = await Promise.all(fetchPromises);
+    results.forEach(r => { allArticles = allArticles.concat(r); });
+
+    // Deduplicate by title (normalized)
     const seen = new Set();
     const uniqueArticles = allArticles.filter(a => {
-      if (!a.title || seen.has(a.title)) return false;
-      seen.add(a.title);
+      if (!a.title) return false;
+      const key = a.title.toLowerCase().trim();
+      if (seen.has(key)) return false;
+      seen.add(key);
       return true;
     });
 
-    // Map to a clean format
+    // Map to clean format
     const articles = uniqueArticles.map(a => ({
       title: a.title,
       description: a.description || '',
@@ -101,7 +112,7 @@ export async function onRequestGet(context) {
     const filtered = filterByCategory(articles, category);
 
     return new Response(
-      JSON.stringify({ articles: filtered, cached: false, lastUpdated: new Date(now).toISOString() }),
+      JSON.stringify({ articles: filtered, cached: false, total: articles.length, lastUpdated: new Date(now).toISOString() }),
       { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } }
     );
   } catch (err) {
@@ -115,11 +126,11 @@ export async function onRequestGet(context) {
 
 function detectCategory(text) {
   const t = text.toLowerCase();
-  if (t.includes('layoff') || t.includes('laid off') || t.includes('job cut') || t.includes('fire') || t.includes('downsize')) return 'layoffs';
-  if (t.includes('hiring') || t.includes('recruit') || t.includes('job opening') || t.includes('hiring spree') || t.includes('onboard')) return 'hiring';
-  if (t.includes('funding') || t.includes('raised') || t.includes('valuation') || t.includes('series') || t.includes('invest')) return 'funding';
-  if (t.includes('acquisition') || t.includes('acquire') || t.includes('merger') || t.includes('buyout')) return 'acquisition';
-  if (t.includes('ipo') || t.includes('listing') || t.includes('stock')) return 'market';
+  if (t.includes('layoff') || t.includes('laid off') || t.includes('job cut') || t.includes('fire') || t.includes('downsize') || t.includes('retrench')) return 'layoffs';
+  if (t.includes('hiring') || t.includes('recruit') || t.includes('job opening') || t.includes('hiring spree') || t.includes('onboard') || t.includes('workforce') || t.includes('talent')) return 'hiring';
+  if (t.includes('funding') || t.includes('raised') || t.includes('valuation') || t.includes('series') || t.includes('invest') || t.includes('unicorn')) return 'funding';
+  if (t.includes('acquisition') || t.includes('acquire') || t.includes('merger') || t.includes('buyout') || t.includes('takeover')) return 'acquisition';
+  if (t.includes('ipo') || t.includes('listing') || t.includes('stock') || t.includes('share price') || t.includes('market cap') || t.includes('revenue') || t.includes('profit') || t.includes('earnings')) return 'market';
   return 'general';
 }
 
